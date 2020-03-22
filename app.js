@@ -1,35 +1,38 @@
-const Express = require("express");
-const BodyParser = require("body-parser");
+'use strict';
+
+//Modules
+var express 	= 	require('express'),
+	app 		= 	express(),
+	mongoose 	= 	require('mongoose'),
+    bodyParser 	= 	require('body-parser');
+
 const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
+      
+//Models
+var	Movie 		= 	require('./api/models/libraryModel');
 
-const CONNECTION_URL = "mongodb+srv://userRW:admin@denzel-cluster-fvdyr.mongodb.net/test?retryWrites=true&w=majority";
-const DATABASE_NAME = "denzelMovies";
+global.config 	= 	require('./modules/config');
+global.db 		= 	require('./modules/db');
 
-var app = Express();
+mongoose.Promise = global.Promise;
 
-app.use(BodyParser.json());
-app.use(BodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+var routes = require('./api/routes/libraryRoutes');
+routes(app);
 
 var database, collection;
+var port = 	process.env.PORT || config.PORT;
 
-app.listen(9292, () => {
-    MongoClient.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology:true }, (error, client) => {
+app.listen(port, () => {
+    MongoClient.connect(config.URI, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
         if(error) {
             throw error;
         }
-        database = client.db(DATABASE_NAME);
-        collection = database.collection("people");
-        console.log("Connected to `" + DATABASE_NAME + "`!");
+        database = client.db(config.DB);
+        collection = database.collection("movie");
+        console.log("Connected to `" + config.DB + "`!");
     });
 });
-
-app.post("/movies", (request, response) => {
-    collection.insert(request.body, (error, result) => {
-        if(error) {
-            return response.status(500).send(error);
-        }
-        response.send(result.result);
-    });
-});
-
