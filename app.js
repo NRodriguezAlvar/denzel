@@ -32,7 +32,7 @@ app.listen(port, () => {
             throw error;
         }
         database = client.db(config.DB);
-        collection = database.collection("movie");
+        collection = database.createCollection('movies');
         console.log("Connected to `" + config.DB + "`!");
     });
 });

@@ -44,4 +44,4 @@ var movieSchema = new Schema({
 	}
 }, { versionKey: false });
 
-module.exports = mongoose.model('Movie', movieSchema);
+module.exports = mongoose.model('Movies', movieSchema);
