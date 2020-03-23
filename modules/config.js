@@ -1,8 +1,9 @@
+'use strict';
+
 var HOST = 'localhost',
 	PORT = 9292,
-	DB	 = 'denzelMovies',
-	URI  = 'mongodb+srv://userRW:admin@denzel-cluster-fvdyr.mongodb.net/test?retryWrites=true&w=majority';
-    ;
+	DB	 = 'library',
+	URI  = 'mongodb://' + HOST + '/' + DB;
 
 module.exports = {
 	HOST: HOST,

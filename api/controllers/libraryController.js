@@ -28,7 +28,7 @@ exports.populate = async(req, res) => {
       await newMovie.save().then(function(movies) {
         res.status(201).json(movies);
       }).catch(function(err) {
-        errorHandler.error(res, err.message, "Failed to create new disk.");
+        errorHandler.error(res, err.message, "Failed to populate movies.");
       });
       console.log('save');
     }
