@@ -6,6 +6,8 @@ module.exports = function(app) {
   app.route('/api/movies/populate/:id')
     .get(library.populate)
   app.route('/api/movies')
+    .get(library.getMovie)
+  app.route('/api/movies/all')
     .get(library.getMovies)
   
 };

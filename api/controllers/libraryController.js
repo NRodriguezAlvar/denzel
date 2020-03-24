@@ -8,9 +8,11 @@ var Movies = db.model('Movies');
 //IMDB data
 const imdb = require('../imdb');
 
+//populate database
 exports.populate = async(req, res) => {
   var moviesJSON;
   try {
+    //to avoid doublons
     await Movies.deleteMany({});
     console.log(`Fetching filmography of ${req.params.id}...`);
     moviesJSON = await imdb(req.params.id);
@@ -32,12 +34,11 @@ exports.populate = async(req, res) => {
     const numMovies = await Movies.estimatedDocumentCount();
     return res.status(200).json({ total: numMovies });
   } catch (err) {
-		return res.status(404).send('Probably wrong actor id.');
+    errorHandler.error(res, err.message, "Probably wrong actor id.");
   }
-
-  
 };
 
+// get all movies
 exports.getMovies = function(req, res) {
     Movies.find({}).then(function(movies) {
       res.status(200).json(movies);
@@ -46,3 +47,26 @@ exports.getMovies = function(req, res) {
     });
 };
 
+//get a random movie
+exports.getMovie = async(req,res) => {
+  try {
+    const numMovies = await Movies.estimatedDocumentCount();
+    let index = Math.random() * Math.floor(numMovies);
+    const randomMovie = await Movies.find().limit(1).skip(index);
+    const { link, id, metascore, poster, rating, synopsis, title, votes, year } = randomMovie[0];
+    return res.status(200).json({
+			link,
+			id,
+			metascore,
+			poster,
+			rating,
+			synopsis,
+			title,
+			votes,
+			year
+		});
+
+  } catch(err) {
+    errorHandler.error(res, err.message, "No movie found");
+  }
+}
