@@ -70,7 +70,7 @@ exports.getMovie = async(req,res) => {
   } catch(err) {
     errorHandler.error(res, err.message, "Not working");
   }
-}
+};
 
 //get a movie by his id
 exports.getMovieId = async(req, res) => {
@@ -98,7 +98,7 @@ exports.getMovieId = async(req, res) => {
       errorHandler.error(res, err.message, "Movie not found", 404);
     });    
   }
-}
+};
 
 //edit a movie to add date and review
 exports.editMovie = function(req, res) {
@@ -110,4 +110,4 @@ exports.editMovie = function(req, res) {
   }).catch(function(err) {
     errorHandler.error(res, err.message, "Movie not found", 404);
   });
-}
+};

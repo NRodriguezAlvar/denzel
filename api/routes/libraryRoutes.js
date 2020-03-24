@@ -3,13 +3,13 @@
 module.exports = function(app) {
   var library = require('../controllers/libraryController');
 
-  app.route('/api/movies/populate/:id')
+  app.route('/movies/populate/:id')
     .get(library.populate)
-  app.route('/api/movies')
+  app.route('/movies')
     .get(library.getMovie)
-  app.route('/api/movies/all')
+  app.route('/movies/all')
     .get(library.getMovies)
-  app.route('/api/movies/:id')
+  app.route('/movies/:id')
     .get(library.getMovieId)
     .post(library.editMovie)
 };
