@@ -50,9 +50,9 @@ exports.getMovies = function(req, res) {
 //get a random movie
 exports.getMovie = async(req,res) => {
   try {
-    const numMovies = await Movies.estimatedDocumentCount();
+    const numMovies = await Movies.countDocuments({ metascore: { $gt: 70 }});;
     let index = Math.random() * Math.floor(numMovies);
-    const randomMovie = await Movies.find().limit(1).skip(index);
+    const randomMovie = await Movies.find({ metascore: { $gt: 70 }}).limit(1).skip(index);
     const { link, id, metascore, poster, rating, synopsis, title, votes, year } = randomMovie[0];
     return res.status(200).json({
 			link,
@@ -67,7 +67,7 @@ exports.getMovie = async(req,res) => {
 		});
 
   } catch(err) {
-    errorHandler.error(res, err.message, "No movie found");
+    errorHandler.error(res, err.message, "Not working");
   }
 }
 
@@ -81,3 +81,4 @@ exports.getMovieId = function(req, res) {
     errorHandler.error(res, err.message, "Movie not found", 404);
   });
 }
+

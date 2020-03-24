@@ -4,7 +4,11 @@
 var express 	= 	require('express'),
 	app 		= 	express(),
 	mongoose 	= 	require('mongoose'),
-    bodyParser 	= 	require('body-parser');      
+    bodyParser 	= 	require('body-parser');
+
+const MongoClient = require("mongodb").MongoClient;
+const ObjectId = require("mongodb").ObjectID;
+      
 //Models
 var	Movie 		= 	require('./api/models/libraryModel');
 
@@ -20,6 +24,12 @@ var routes = require('./api/routes/libraryRoutes');
 routes(app);
 
 var port = 	process.env.PORT || config.PORT;
-app.listen(port);
 
-console.log('library list RESTful API server started on: ' + port);
+app.listen(port, () => {
+    MongoClient.connect(config.URI, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
+        if(error) {
+            throw error;
+        }
+        console.log("Connected to `" + config.DB + "`!");
+    });
+});

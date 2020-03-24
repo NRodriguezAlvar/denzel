@@ -3,7 +3,7 @@
 //Modules
 var mongoose = 	require('mongoose');
 
-var db = mongoose.createConnection(config.URI, {useNewUrlParser: true, useUnifiedTopology: true });
+var db = mongoose.createConnection(config.URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 db.on('error', function(err) {
 	if (err) {
