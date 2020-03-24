@@ -10,7 +10,7 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
       
 //Models
-var	Movie 		= 	require('./api/models/libraryModel');
+var	Movie 		= 	require('./api rest/models/libraryModel');
 
 global.config 	= 	require('./modules/config');
 global.db 		= 	require('./modules/db');
@@ -20,7 +20,7 @@ mongoose.Promise = global.Promise;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-var routes = require('./api/routes/libraryRoutes');
+var routes = require('./api rest/routes/libraryRoutes');
 routes(app);
 
 var port = 	process.env.PORT || config.PORT;
