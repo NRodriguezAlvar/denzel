@@ -13,7 +13,7 @@ exports.populate = async(req, res) => {
   var moviesJSON;
   try {
     //to avoid doublons
-    await Movies.deleteMany({});
+    await Movies.deleteMany({actorID: req.params.id});
     console.log(`Fetching filmography of ${req.params.id}...`);
     moviesJSON = await imdb(req.params.id);
     for(let i = 0; i < moviesJSON.length; i++) {
@@ -82,3 +82,13 @@ exports.getMovieId = function(req, res) {
   });
 }
 
+exports.editMovie = function(req, res) {
+  Movies.findOneAndUpdate({idMovie: req.params.id}, req.body, {new: true}).exec().then(function(movies) {
+    if (movies === null) {
+      throw new Error("Movie not found for value \"" + req.params.id + "\"");
+    }
+    res.status(200).json(movies);
+  }).catch(function(err) {
+    errorHandler.error(res, err.message, "Movie not found", 404);
+  });
+}
