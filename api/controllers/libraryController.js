@@ -70,3 +70,14 @@ exports.getMovie = async(req,res) => {
     errorHandler.error(res, err.message, "No movie found");
   }
 }
+
+exports.getMovieId = function(req, res) {
+  Movies.find({idMovie: req.params.id}).exec().then(function(movies) {
+    if (movies === null) {
+      throw new Error("Movie not found for value \"" + req.params.id + "\"");
+    }
+    res.status(200).json(movies);
+  }).catch(function(err) {
+    errorHandler.error(res, err.message, "Movie not found", 404);
+  });
+}

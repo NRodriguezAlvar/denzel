@@ -9,5 +9,6 @@ module.exports = function(app) {
     .get(library.getMovie)
   app.route('/api/movies/all')
     .get(library.getMovies)
-  
+  app.route('/api/movies/:id')
+    .get(library.getMovieId)
 };
