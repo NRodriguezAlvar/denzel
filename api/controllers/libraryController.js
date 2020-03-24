@@ -1,6 +1,7 @@
 'use strict';
 //Modules
 var mongoose = require('mongoose');
+mongoose.set('useFindAndModify', false);
 //Utils
 var errorHandler = require('../handlers/errorHandler.js');
 //Model
@@ -53,10 +54,10 @@ exports.getMovie = async(req,res) => {
     const numMovies = await Movies.countDocuments({ metascore: { $gt: 70 }});;
     let index = Math.random() * Math.floor(numMovies);
     const randomMovie = await Movies.find({ metascore: { $gt: 70 }}).limit(1).skip(index);
-    const { link, id, metascore, poster, rating, synopsis, title, votes, year } = randomMovie[0];
+    const { link, idMovie, metascore, poster, rating, synopsis, title, votes, year } = randomMovie[0];
     return res.status(200).json({
 			link,
-			id,
+			idMovie,
 			metascore,
 			poster,
 			rating,
@@ -71,17 +72,35 @@ exports.getMovie = async(req,res) => {
   }
 }
 
-exports.getMovieId = function(req, res) {
-  Movies.find({idMovie: req.params.id}).exec().then(function(movies) {
-    if (movies === null) {
-      throw new Error("Movie not found for value \"" + req.params.id + "\"");
+//get a movie by his id
+exports.getMovieId = async(req, res) => {
+  if(req.params.id === "search") {
+    try {
+      let limit = 5, metascore = 0;
+      if(req.query.limit) {
+        limit = Number(req.query.limit);
+      }
+      if(req.query.metascore) {
+        metascore = Number(req.query.metascore);
+      }
+      const movies = await Movies.aggregate([{ $match: { metascore: { $gt: metascore } } }, { $sample: { size: limit } }, { $sort: { metascore: -1 } }])
+      return res.status(200).json(movies);
+    } catch(err) {
+      errorHandler.error(res, err.message, "No movies found", 404);
     }
-    res.status(200).json(movies);
-  }).catch(function(err) {
-    errorHandler.error(res, err.message, "Movie not found", 404);
-  });
+  } else {
+    Movies.find({idMovie: req.params.id}).exec().then(function(movies) {
+      if (movies === null) {
+        throw new Error("Movie not found for value \"" + req.params.id + "\"");
+      }
+      res.status(200).json(movies);
+    }).catch(function(err) {
+      errorHandler.error(res, err.message, "Movie not found", 404);
+    });    
+  }
 }
 
+//edit a movie to add date and review
 exports.editMovie = function(req, res) {
   Movies.findOneAndUpdate({idMovie: req.params.id}, req.body, {new: true}).exec().then(function(movies) {
     if (movies === null) {
