@@ -20,7 +20,7 @@ exports.populate = async(req, res) => {
     for(let i = 0; i < moviesJSON.length; i++) {
         const newMovie = new Movies ({
           actorID: req.params.id,
-          idMovie: moviesJSON[i].id,
+          id: moviesJSON[i].id,
           link: moviesJSON[i].link,
           metascore: moviesJSON[i].metascore,
           poster: moviesJSON[i].poster,
@@ -54,10 +54,10 @@ exports.getMovie = async(req,res) => {
     const numMovies = await Movies.countDocuments({ metascore: { $gt: 70 }});;
     let index = Math.random() * Math.floor(numMovies);
     const randomMovie = await Movies.find({ metascore: { $gt: 70 }}).limit(1).skip(index);
-    const { link, idMovie, metascore, poster, rating, synopsis, title, votes, year } = randomMovie[0];
+    const { link, id, metascore, poster, rating, synopsis, title, votes, year } = randomMovie[0];
     return res.status(200).json({
 			link,
-			idMovie,
+			id,
 			metascore,
 			poster,
 			rating,
@@ -68,6 +68,7 @@ exports.getMovie = async(req,res) => {
 		});
 
   } catch(err) {
+    console.log(err);
     errorHandler.error(res, err.message, "Not working");
   }
 };
@@ -89,7 +90,7 @@ exports.getMovieId = async(req, res) => {
       errorHandler.error(res, err.message, "No movies found", 404);
     }
   } else {
-    Movies.find({idMovie: req.params.id}).exec().then(function(movies) {
+    Movies.find({id: req.params.id}).exec().then(function(movies) {
       if (movies === null) {
         throw new Error("Movie not found for value \"" + req.params.id + "\"");
       }
@@ -102,7 +103,7 @@ exports.getMovieId = async(req, res) => {
 
 //edit a movie to add date and review
 exports.editMovie = function(req, res) {
-  Movies.findOneAndUpdate({idMovie: req.params.id}, req.body, {new: true}).exec().then(function(movies) {
+  Movies.findOneAndUpdate({id: req.params.id}, req.body, {new: true}).exec().then(function(movies) {
     if (movies === null) {
       throw new Error("Movie not found for value \"" + req.params.id + "\"");
     }

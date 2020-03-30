@@ -12,7 +12,7 @@ var movieSchema = new Schema({
 	link: {
 		type: String
 	},
-	idMovie: {
+	id: {
 		type: String
 	},
 	metascore: {
